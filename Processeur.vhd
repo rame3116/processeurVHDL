@@ -31,7 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Processeur is
     Port ( Instruction : in  STD_LOGIC_VECTOR (15 downto 0)); 
-	 --Entrée du processeur, quoi mettre exactement ???????
+	 --Entrée du processeur, quoi mettre exactement ??????
 end Processeur;
 
 architecture struct of Processeur is
@@ -60,7 +60,8 @@ begin
 
 	OPw <= '1' when OP5 =x"6"; --LC 
 	
-
+	--Enorme chaz
+	--
 end struct;
 --création LCs et MUXs directement ici et pas de modules à créer
 
