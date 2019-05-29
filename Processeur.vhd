@@ -46,7 +46,7 @@ signal OPw : bit;
 signal CLK : bit;
 begin
 							--port map (Adr, DIN, RW, RST, CLK, DOUT);
-	bancRegistre : Banc_registre port map (aW => A5, W => OPw, DATA =>5, CLK=> CLK)
+	bancRegistre : Banc_registre port map (aW => A5, W => OPw, DATA =>5, CLK=> CLK);
 							--port map (aA, aB, aW, W, DATA, RST, CLK, QA, QB)
 	--alu : ALU port map (A => , B, S, OP, N, O, C, Z);
 							--port map (A, B, S, OP, N, O, C, Z);
@@ -60,8 +60,7 @@ begin
 
 	OPw <= '1' when OP5 =x"6"; --LC 
 	
-	--Enorme chaz
-	--
+
 end struct;
 --création LCs et MUXs directement ici et pas de modules à créer
 

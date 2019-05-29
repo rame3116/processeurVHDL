@@ -32,8 +32,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity Decode is
     Port ( Instruction : in  STD_LOGIC_VECTOR (31 downto 0);
            OP : out  STD_LOGIC_VECTOR (3 downto 0);
-           A : out  STD_LOGIC_VECTOR (7 downto 0);
-           B : out  STD_LOGIC_VECTOR (15 downto 0);
+           A : out  STD_LOGIC_VECTOR (7 downto 0);--A ne peut avoir qu'une adresse ou le numéro d'un registre
+           B : out  STD_LOGIC_VECTOR (15 downto 0);-- B peut prendre une valeur de 16 bits
            C : out  STD_LOGIC_VECTOR (3 downto 0));
 end Decode;
 
@@ -42,9 +42,17 @@ signal OPaux : STD_LOGIC_VECTOR (3 downto 0);
 begin
 	-- les 4 bits de poids fort codent OP
 	OPaux <= Instruction (31 downto 28);
-	OP <= OPaux;
+	OP <= OPaux;--On peut pas lire une sortie
 	
-	A <= Instruction (27 downto 24) when OPaux=0x"06";
-
+	A <= Instruction (27 downto 20) when OPaux=x"E" or OPaux=x"F" or OPaux=x"8" else
+		"0000"&Instruction(27 downto 24);
+	
+	B <= Instruction (23 downto 8) when OPaux=x"6" else
+		 x"000"&Instruction (23 downto 16) when OPaux=x"7" else
+		 x"0" when OPaux=x"8" or OPaux=x"E" or OPaux=x"F" else
+		  x"000"&Instruction (23 downto 20); --Quand B est un registre
+		 
+	C <= x"0" when OPaux=x"5" or OPaux=x"6" or OPaux=x"7" or OPaux=x"E" else
+			Instruction (19 downto 16);
 end Behavioral;
 
