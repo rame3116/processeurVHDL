@@ -45,11 +45,11 @@ begin
 	OP <= OPaux;--On peut pas lire une sortie
 	
 	A <= Instruction (27 downto 20) when OPaux=x"E" or OPaux=x"F" or OPaux=x"8" else
-		"0000"&Instruction(27 downto 24);
+		x"0"&Instruction(27 downto 24);
 	
 	B <= Instruction (23 downto 8) when OPaux=x"6" else
-		 x"000"&Instruction (23 downto 16) when OPaux=x"7" else
-		 x"0" when OPaux=x"8" or OPaux=x"E" or OPaux=x"F" else
+		 x"00"&Instruction (23 downto 16) when OPaux=x"7" else
+		 x"0000" when OPaux=x"8" or OPaux=x"E" or OPaux=x"F" else
 		  x"000"&Instruction (23 downto 20); --Quand B est un registre
 		 
 	C <= x"0" when OPaux=x"5" or OPaux=x"6" or OPaux=x"7" or OPaux=x"E" else
