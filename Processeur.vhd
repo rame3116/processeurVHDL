@@ -30,7 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Processeur is
-    Port ( Instruction : in  STD_LOGIC_VECTOR (31 downto 0)); 
+    Port ( Instruction : in  STD_LOGIC_VECTOR (31 downto 0);
+				RESET : in  STD_LOGIC;
+				CLOCK : in  STD_LOGIC); 
 	 --Entrée du processeur, quoi mettre exactement ??????
 end Processeur;
 
@@ -93,27 +95,27 @@ architecture struct of Processeur is
         );
     END COMPONENT;
 
-signal A0, A1, A2, A3, A4, A5 : STD_LOGIC_VECTOR (7 downto 0);
-signal B0, B1, B2, B3, B4, B5 : STD_LOGIC_VECTOR (15 downto 0);
-signal OP0, OP1, OP2, OP3, OP4, OP5, C0, A6: STD_LOGIC_VECTOR (3 downto 0);
+signal A1, A2, A3, A4, A5 : STD_LOGIC_VECTOR (7 downto 0);
+signal B1, B2, B3, B4, B5 : STD_LOGIC_VECTOR (15 downto 0);
+signal OP1, OP2, OP3, OP4, OP5, C1, A6: STD_LOGIC_VECTOR (3 downto 0);
 signal OPw : STD_LOGIC;
 signal CLK : STD_LOGIC;
 begin
 	decodeur: Decode PORT MAP (
           Instruction => Instruction,
-          OP => OP0,
-          A => A0,
-          B => B0,
-          C => C0
+          OP => OP1,
+          A => A1,
+          B => B1,
+          C => C1
         );	
 	bancRegistre: Banc_registre PORT MAP (
           aA => "0000", --Pour l'instant, le temps de faire AFC
           aB => "0000", --Pour l'instant, le temps de faire AFC
-          aW => A5,
+          aW => A5(3 downto 0),
           W => OPw,
           DATA => B5,
-          RST => '1',
-          CLK => CLK,
+          RST => RESET,
+          CLK => CLOCK,
           QA => open,
           QB => open
         );
@@ -138,7 +140,7 @@ begin
 		OPout => OP2,
 		Cin => x"00",
 		Cout => open,
-		CLK => CLK);
+		CLK => CLOCK);
 		
 	di_ex : Pipeline port map (
 		Ain => A2, 
@@ -149,7 +151,7 @@ begin
 		OPout => OP3,
 		Cin => x"00",
 		Cout => open,
-		CLK => CLK);
+		CLK => CLOCK);
 		
 	ex_mem : Pipeline port map (
 		Ain => A3, 
@@ -160,7 +162,7 @@ begin
 		OPout => OP4,
 		Cin => x"00",
 		Cout => open,
-		CLK => CLK);
+		CLK => CLOCK);
 		
 	
 		
@@ -173,7 +175,7 @@ begin
 		OPout => OP5,
 		Cin => x"00",
 		Cout => open,
-		CLK => CLK);
+		CLK => CLOCK);
 	OPw <= '1' when OP5 =x"6"; --LC 
 	
 	--A6 prend les 4 bits de poids faibles de A5
