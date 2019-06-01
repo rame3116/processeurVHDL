@@ -86,7 +86,13 @@ BEGIN
       -- insert stimulus here 
 		Instruction <= x"61240000";
       wait for CLOCK_period*10;
-
+		
+		Instruction <= x"62640000";
+      wait for CLOCK_period*10;
+		
+		Instruction <= x"51240000";
+      wait for CLOCK_period*10;
+		
       wait;
    end process;
 
