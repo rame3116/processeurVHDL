@@ -2,9 +2,9 @@ Command line:
    ALU_isim_beh.exe
      -simmode  gui
      -simrunnum  0
-     -socket  46089
+     -socket  48084
 
-Fri May 10 10:11:49 2019
+Mon Jun  3 19:28:54 2019
 
 
  Elaboration Time: 0.01 sec
@@ -20,9 +20,9 @@ Fri May 10 10:11:49 2019
  Total Traceable Variables  : 10
  Total Scalar Nets and Variables : 483
 
- Total Simulation Time: 0.02 sec
+ Total Simulation Time: 0.03 sec
 
  Current Memory Usage: 278.999 Meg
 
-Fri May 10 10:13:05 2019
+Mon Jun  3 19:29:11 2019
 

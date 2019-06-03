@@ -1,0 +1,1 @@
+xst -intstyle ise -ifn "/home/rahmoun/Projet_systeme_info/Processeur.xst" -ofn "/home/rahmoun/Projet_systeme_info/Processeur.syr" 

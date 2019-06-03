@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "secureip" -o "/home/rahmoun/Projet_systeme_info/Testalu_isim_beh.exe" -prj "/home/rahmoun/Projet_systeme_info/Testalu_beh.prj" "work.Testalu" 
+-intstyle "ise" -incremental -lib "secureip" -o "/home/rahmoun/Projet_systeme_info/TestProcesseur_isim_beh.exe" -prj "/home/rahmoun/Projet_systeme_info/TestProcesseur_beh.prj" "work.TestProcesseur" 
