@@ -84,14 +84,23 @@ BEGIN
       wait for CLOCK_period*10;
 
       -- insert stimulus here 
-		Instruction <= x"61240000";
+		Instruction <= x"61000400";
       wait for CLOCK_period*10;
 		
-		Instruction <= x"62640000";
+		Instruction <= x"62000700";
       wait for CLOCK_period*10;
 		
-		Instruction <= x"51240000";
+		Instruction <= x"55200000";
       wait for CLOCK_period*10;
+		
+		Instruction <= x"13120000";
+		wait for CLOCK_period*10;
+		
+		Instruction <= x"33210000";--3=> soustraction
+		wait for CLOCK_period*10;
+		
+		Instruction <= x"24310000";--2=> multiplication
+		wait for CLOCK_period*10;
 		
       wait;
    end process;

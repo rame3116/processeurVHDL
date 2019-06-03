@@ -73,11 +73,11 @@ architecture struct of Processeur is
          Ain : IN  std_logic_vector(7 downto 0);
          OPin : IN  std_logic_vector(3 downto 0);
          Bin : IN  std_logic_vector(15 downto 0);
-         Cin : IN  std_logic_vector(7 downto 0);
+         Cin : IN  std_logic_vector(15 downto 0);
          Aout : OUT  std_logic_vector(7 downto 0);
          OPout : OUT  std_logic_vector(3 downto 0);
          Bout : OUT  std_logic_vector(15 downto 0);
-         Cout : OUT  std_logic_vector(7 downto 0);
+         Cout : OUT  std_logic_vector(15 downto 0);
          CLK : IN  std_logic
         );
     END COMPONENT;
@@ -102,7 +102,9 @@ signal OPw : STD_LOGIC;
 signal CLK : STD_LOGIC;
 signal Benter: STD_LOGIC_VECTOR (15 downto 0); --Pour le multiplexeur avant DI/EX
 signal OutQA, OutQB: STD_LOGIC_VECTOR (15 downto 0);
-signal C2: STD_LOGIC_VECTOR (3 downto 0);
+signal C2: STD_LOGIC_VECTOR (15 downto 0);
+signal AinALU, BinALU, OutALU: STD_LOGIC_VECTOR (15 downto 0);
+signal OPinALU: STD_LOGIC_VECTOR (3 downto 0);
 begin
 	decodeur: Decode PORT MAP (
           Instruction => Instruction,
@@ -113,7 +115,7 @@ begin
         );	
 	bancRegistre: Banc_registre PORT MAP (
           aA => B2(3 downto 0), --Pour l'instant, le temps de faire AFC
-          aB => C2, --Pour l'instant, le temps de faire AFC
+          aB => C2(3 downto 0), --Pour l'instant, le temps de faire AFC
           aW => A5(3 downto 0),
           W => OPw,
           DATA => B5,
@@ -141,7 +143,7 @@ begin
 		Bout => B2,
 		OPin => OP1,   
 		OPout => OP2,
-		Cin => C1, --la sortie C du decode
+		Cin => x"000"&C1, --la sortie C du decode
 		Cout => C2, -- Va direct dans aB du banc de rg
 		CLK => CLOCK);
 		
@@ -163,7 +165,7 @@ begin
 		Bout => B4,
 		OPin => OP3,   
 		OPout => OP4,
-		Cin => x"00",
+		Cin => x"0000",
 		Cout => open,
 		CLK => CLOCK);
 		
@@ -176,15 +178,16 @@ begin
 		Bout => B5,
 		OPin => OP4,   
 		OPout => OP5,
-		Cin => x"00",
+		Cin => x"0000",
 		Cout => open,
 		CLK => CLOCK);
 		
 		
 	--ICI ON GERE LES MULTIPLEXEURS ET LES LC, 
 	--IL FAUT GÉRER TOUS LES CODES POSSIBLES
-	OPw <= '1' when OP5 =x"6" or OP5 =x"1" or OP5 =x"2" or OP5 =x"3" ; --LC 
-	Benter <= OutQA when OP2=x"5" else--Multiplexeur avant DI/EX
+	OPw <= '1' when OP5 =x"6" or OP5 =x"1" or OP5 =x"2" or OP5 =x"3" or OP5=x"7" or OP5=x"5"or OP5=x"9"or OP5=x"A"or OP5=x"B" or OP5=x"C" or OP5=x"D" else
+	 '0'; --LC 
+	Benter <= OutQA when OP2=x"5" or OP2=x"1" or OP2=x"2" or OP2=x"3" or OP2=x"4" else--Multiplexeur avant DI/EX
 		B2;
 	OPinALU<= x"1" when OP3=x"1" else
 		x"2" when OP3=x"3" else
@@ -193,7 +196,7 @@ begin
 	--A6 prend les 4 bits de poids faibles de A5
 	--pour rentrer dans aW du banc de registre
 	A6 <= A5(3 downto 0);
-	
+	AinALU <= B3 when OP3=x"1" or OP3=x"2" or OP3=x"3" or OP3=x"4";
 	
 	--
 	Binexmem <= OutALU when OP3=x"1" or OP3=x"2" or OP3=x"3" or OP3=x"4" else
