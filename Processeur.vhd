@@ -46,15 +46,26 @@ architecture struct of Processeur is
 
     COMPONENT Banc_registre
     PORT(
-         aA : IN  std_logic_vector(3 downto 0);
-         aB : IN  std_logic_vector(3 downto 0);
-         aW : IN  std_logic_vector(3 downto 0);
+         aA : IN  std_logic_vector(7 downto 0);
+         aB : IN  std_logic_vector(7 downto 0);
+         aW : IN  std_logic_vector(7 downto 0);
          W : IN  std_logic;
          DATA : IN  std_logic_vector(15 downto 0);
          RST : IN  std_logic;
          CLK : IN  std_logic;
          QA : OUT  std_logic_vector(15 downto 0);
          QB : OUT  std_logic_vector(15 downto 0)
+        );
+    END COMPONENT;
+	 
+	 COMPONENT Memoire_donnees
+    PORT(
+         Adr : IN  std_logic_vector(7 downto 0);
+         DIN : IN  std_logic_vector(15 downto 0);
+         RW : IN  std_logic;
+         RST : IN  std_logic;
+         CLK : IN  std_logic;
+         DOUT : OUT  std_logic_vector(15 downto 0)
         );
     END COMPONENT;
 	 
@@ -96,15 +107,18 @@ architecture struct of Processeur is
     END COMPONENT;
 
 signal A1, A2, A3, A4, A5 : STD_LOGIC_VECTOR (7 downto 0);
-signal B1, B2, B3, B4, B5, Binexmem : STD_LOGIC_VECTOR (15 downto 0);
+signal B1, B2, B3, B4, B5, Binexmem, B_mem_re_in, IN_mem_donnee : STD_LOGIC_VECTOR (15 downto 0);
 signal OP1, OP2, OP3, OP4, OP5, C1, A6: STD_LOGIC_VECTOR (3 downto 0);
 signal OPw : STD_LOGIC;
+signal RWin: STD_LOGIC;--RW mémoire données
 signal CLK : STD_LOGIC;
 signal Benter: STD_LOGIC_VECTOR (15 downto 0); --Pour le multiplexeur avant DI/EX
 signal OutQA, OutQB: STD_LOGIC_VECTOR (15 downto 0);
 signal C2: STD_LOGIC_VECTOR (15 downto 0);
 signal AinALU, BinALU, OutALU: STD_LOGIC_VECTOR (15 downto 0);
 signal OPinALU: STD_LOGIC_VECTOR (3 downto 0);
+signal Adr_mem_donnee: STD_LOGIC_VECTOR (7 downto 0);
+signal OUTmem_donnees: STD_LOGIC_VECTOR (15 downto 0);
 begin
 	decodeur: Decode PORT MAP (
           Instruction => Instruction,
@@ -113,10 +127,20 @@ begin
           B => B1,
           C => C1
         );	
+		  
+	  mem_donnees: Memoire_donnees PORT MAP (
+		 Adr => Adr_mem_donnee,--8 bits
+		 DIN => IN_mem_donnee, --16 bits
+		 RW => RWin,
+		 RST => RESET,
+		 CLK => CLOCK,
+		 DOUT => OUTmem_donnees
+	  );
+		  
 	bancRegistre: Banc_registre PORT MAP (
-          aA => B2(3 downto 0), --Pour l'instant, le temps de faire AFC
-          aB => C2(3 downto 0), --Pour l'instant, le temps de faire AFC
-          aW => A5(3 downto 0),
+          aA => B2(7 downto 0), 
+          aB => C2(7 downto 0), 
+          aW => A5,
           W => OPw,
           DATA => B5,
           RST => RESET,
@@ -174,7 +198,7 @@ begin
 	mem_re : Pipeline port map (
 		Ain => A4, 
 		Aout => A5,
-		Bin => B4,
+		Bin => B_mem_re_in,
 		Bout => B5,
 		OPin => OP4,   
 		OPout => OP5,
@@ -187,7 +211,7 @@ begin
 	--IL FAUT GÉRER TOUS LES CODES POSSIBLES
 	OPw <= '1' when OP5 =x"6" or OP5 =x"1" or OP5 =x"2" or OP5 =x"3" or OP5=x"7" or OP5=x"5"or OP5=x"9"or OP5=x"A"or OP5=x"B" or OP5=x"C" or OP5=x"D" else
 	 '0'; --LC 
-	Benter <= OutQA when OP2=x"5" or OP2=x"1" or OP2=x"2" or OP2=x"3" or OP2=x"4" else--Multiplexeur avant DI/EX
+	Benter <= OutQA when OP2=x"5" or OP2=x"1" or OP2=x"2" or OP2=x"3" or OP2=x"4" or OP2=x"8" else--Multiplexeur avant DI/EX
 		B2;
 	OPinALU<= x"1" when OP3=x"1" else
 		x"2" when OP3=x"3" else
@@ -197,10 +221,19 @@ begin
 	--pour rentrer dans aW du banc de registre
 	A6 <= A5(3 downto 0);
 	AinALU <= B3 when OP3=x"1" or OP3=x"2" or OP3=x"3" or OP3=x"4";
-	
+	RWin <= '1' when OP4=x"8"else --Ecrire dans la mémoire que pour les load
+		'0';
 	--
 	Binexmem <= OutALU when OP3=x"1" or OP3=x"2" or OP3=x"3" or OP3=x"4" else
 		B3;
+	B_mem_re_in <= OUTmem_donnees  when OP4=x"7" else
+		B4;
+		
+	Adr_mem_donnee <= B4 when OP4=x"7" else
+		A4 when OP4=x"8";	
+	
+	IN_mem_donnee<= B4 when OP4=x"8";
+	
 end struct;
 
  

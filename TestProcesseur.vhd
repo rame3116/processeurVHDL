@@ -84,24 +84,29 @@ BEGIN
       wait for CLOCK_period*10;
 
       -- insert stimulus here 
-		Instruction <= x"61000400";
+		Instruction <= x"61000400"; -- 6=> AFC
       wait for CLOCK_period*10;
 		
 		Instruction <= x"62000700";
       wait for CLOCK_period*10;
 		
-		Instruction <= x"55200000";
+		Instruction <= x"55200000"; --5=> Copie
       wait for CLOCK_period*10;
 		
-		Instruction <= x"13120000";
+		Instruction <= x"13120000"; --1 => Add
 		wait for CLOCK_period*10;
 		
-		Instruction <= x"33210000";--3=> soustraction
+--		Instruction <= x"33210000";--3=> soustraction
+	--	wait for CLOCK_period*10;
+		
+		--Instruction <= x"24310000";--2=> multiplication
+		--wait for CLOCK_period*10;
+		
+		Instruction <= x"80c20000"; --8 => Store à l'adresse 0c la valeur du registre 2
 		wait for CLOCK_period*10;
 		
-		Instruction <= x"24310000";--2=> multiplication
+		Instruction <= x"790c0000"; --7 => Load R9 @oc
 		wait for CLOCK_period*10;
-		
       wait;
    end process;
 

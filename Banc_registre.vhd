@@ -30,9 +30,9 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity Banc_registre is
-    Port ( aA : in  STD_LOGIC_VECTOR (3 downto 0);
-           aB : in  STD_LOGIC_VECTOR (3 downto 0);
-           aW : in  STD_LOGIC_VECTOR (3 downto 0);
+    Port ( aA : in  STD_LOGIC_VECTOR (7 downto 0);
+           aB : in  STD_LOGIC_VECTOR (7 downto 0);
+           aW : in  STD_LOGIC_VECTOR (7 downto 0);
            W : in  STD_LOGIC;
            DATA : in  STD_LOGIC_VECTOR (15 downto 0);
            RST : in  STD_LOGIC;
@@ -46,7 +46,6 @@ architecture Behavioral of Banc_registre is
 type myTab_type    is array(15 downto 0) of std_logic_vector(15 downto 0);
 signal tab  :   myTab_type;
 begin
-
 
 process
 begin

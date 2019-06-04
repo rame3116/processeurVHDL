@@ -48,11 +48,12 @@ begin
 		x"0"&Instruction(27 downto 24);
 	
 	B <= Instruction (23 downto 8) when OPaux=x"6" else
-		 x"00"&Instruction (23 downto 16) when OPaux=x"7" else
-		 x"0000" when OPaux=x"8" or OPaux=x"E" or OPaux=x"F" else
-		  x"000"&Instruction (23 downto 20); --Quand B est un registre
+		 x"00"&Instruction (23 downto 16) when OPaux=x"7"else
+		 x"000"&Instruction(19 downto 16) when OPaux=x"8" else
+		 x"0000" when OPaux=x"E" or OPaux=x"F" else
+		  x"000"&Instruction (23 downto 20); --Quand A et B sont des registres
 		 
-	C <= x"0" when OPaux=x"5" or OPaux=x"6" or OPaux=x"7" or OPaux=x"E" else
+	C <= x"0" when OPaux=x"5" or OPaux=x"6" or OPaux=x"7" or OPaux=x"8" or OPaux=x"E" else
 			Instruction (19 downto 16);
 end Behavioral;
 
